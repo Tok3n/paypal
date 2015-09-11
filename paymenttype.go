@@ -354,4 +354,39 @@ type (
 		Custom           string     `json:"custom,omitempty"`
 		SoftDescriptor   string     `json:"soft_descriptor,omitempty"`
 	}
+
+	/*
+	Plan and agreement objects
+	 */
+	// Plan Object
+	Plan struct {
+		Id					string    `json:"id,omitempty"`
+		Name				string    `json:"name,omitempty"`
+		Description			string    `json:"description,omitempty"`
+		Type				string    `json:"type,omitempty"`
+		State				string    `json:"state,omitempty"`
+		CreateTime			*time.Time	`json:"create_time,omitempty"`
+		UpdateTime			*time.Time	`json:"update_time,omitempty"`
+		//PaymentDefinitions	string    `json:"payment_definitions,omitempty"`
+		//Terms				string    `json:"terms,omitempty"`
+		//MerchantPreferences	string    `json:"merchant_preferences,omitempty"`
+		Links				[]Links    `json:"links,omitempty"`
+	}
+
+	Agreement struct {
+		Id							string		`json:"id,omitempty"`
+		State						string		`json:"state,omitempty"`
+		Name						string		`json:"name,omitempty"`
+		Description					string		`json:"description,omitempty"`
+		StartDate					string	`json:"start_date,omitempty"`
+		//AgreementDetails
+		Payer						*Payer		`json:"payer,omitempty"`
+		ShippingAddress				*Address	`json:"shipping_address,omitempty"`
+		//OverrideMerchantPreferences
+		//OverrideChargeModels	[]
+		Plan						*Plan		`json:"plan,omitempty"`
+		CreateTime					string		`json:"create_time,omitempty"`
+		UpdateTime					string		`json:"update_time,omitempty"`
+		Links						[]Links		`json:"links,omitempty"`
+	}
 )

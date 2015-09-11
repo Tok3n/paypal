@@ -22,7 +22,7 @@ type (
 
 // CreatePayment creates a payment in Paypal
 func (c *Client) CreatePayment(p Payment) (*CreatePaymentResp, error) {
-	req, err := NewRequest("POST", fmt.Sprintf("%s/payments/payment", c.APIBase), p)
+	req, err := NewRequest("POST", fmt.Sprintf("%s/payments/billing-agreements", c.APIBase), p)
 	if err != nil {
 		return nil, err
 	}

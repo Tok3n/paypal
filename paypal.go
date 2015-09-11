@@ -91,6 +91,11 @@ func NewRequest(method, url string, payload interface{}) (*http.Request, error) 
 	return http.NewRequest(method, url, buf)
 }
 
+// OverrideHttpClient set a new http.Client in case of been needed by other infrastructure like GAE
+func (c Client) OverrideHttpClient(client *http.Client){
+	c.client = client
+}
+
 // GetAcessToken request a new access token from Paypal
 func (c *Client) GetAccessToken() (*TokenResp, error) {
 	buf := bytes.NewBuffer([]byte("grant_type=client_credentials"))
@@ -143,10 +148,18 @@ func (c *Client) Send(req *http.Request, v interface{}) error {
 	}
 
 	if v != nil {
+
+		data, _ := ioutil.ReadAll(resp.Body)
+		if isGAE{
+
+			ctx.Infof("Response body: '%s'",string(data))
+		}
 		if w, ok := v.(io.Writer); ok {
-			io.Copy(w, resp.Body)
+			var b bytes.Buffer
+			b.Write(data)
+			b.WriteTo(w)
 		} else {
-			err = json.NewDecoder(resp.Body).Decode(v)
+			err = json.Unmarshal(data, v)
 			if err != nil {
 				return err
 			}
