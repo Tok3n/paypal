@@ -185,3 +185,66 @@ func (c *Client) SendWithAuth(req *http.Request, v interface{}) error {
 
 	return c.Send(req, v)
 }
+
+
+// Send makes a request to the API, the response body will be
+// unmarshaled into v, or if v is an io.Writer, the response will
+// be written to it without decoding
+func (c *Client) SendString(req *http.Request) (error, string) {
+	// Set default headers
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Accept-Language", "en_US")
+
+	// Default values for headers
+	if req.Header.Get("Content-type") == "" {
+		req.Header.Set("Content-type", "application/json")
+	}
+
+	log.Println(req.Method, ": ", req.URL)
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return err, ""
+	}
+	defer resp.Body.Close()
+
+	if c := resp.StatusCode; c < 200 || c > 299 {
+		errResp := &ErrorResponse{Response: resp}
+		data, err := ioutil.ReadAll(resp.Body)
+
+		if err == nil && len(data) > 0 {
+			json.Unmarshal(data, errResp)
+		}
+
+		return errResp, ""
+	}
+
+
+
+	data, _ := ioutil.ReadAll(resp.Body)
+	if isGAE{
+
+		ctx.Infof("Response body: '%s'",string(data))
+	}
+	return nil, string(data)
+
+
+	return nil, ""
+}
+
+// SendWithAuth makes a request to the API and apply OAuth2 header automatically.
+// If the access token soon to be expired, it will try to get a new one before
+// making the main request
+func (c *Client) SendWithAuthString(req *http.Request) (error,string) {
+	if (c.Token == nil) || (c.Token.ExpiresAt.Before(time.Now())) {
+		resp, err := c.GetAccessToken()
+		if err != nil {
+			return err, ""
+		}
+
+		c.Token = resp
+	}
+	req.Header.Set("Authorization", "Bearer "+c.Token.Token)
+
+	return c.SendString(req)
+}
