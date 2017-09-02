@@ -1,7 +1,7 @@
 package paypal
 import (
-"appengine/urlfetch"
-"appengine"
+"google.golang.org/appengine/urlfetch"
+"google.golang.org/appengine"
 )
 
 var ctx appengine.Context
