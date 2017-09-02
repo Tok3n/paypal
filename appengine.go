@@ -1,13 +1,13 @@
 package paypal
 import (
-"google.golang.org/appengine/urlfetch"
-"google.golang.org/appengine"
+	"google.golang.org/appengine/urlfetch"
+	"golang.org/x/net/context"
 )
 
-var ctx appengine.Context
+var ctx context.Context
 var isGAE = false
 // NewClient returns a new Client struct
-func NewClientForGAE(clientID, secret, APIBase string, c appengine.Context) *Client {
+func NewClientForGAE(clientID, secret, APIBase string, c context.Context) *Client {
 	ctx = c
 	isGAE = true
 	return &Client{

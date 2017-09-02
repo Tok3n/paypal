@@ -152,7 +152,7 @@ func (c *Client) Send(req *http.Request, v interface{}) error {
 		data, _ := ioutil.ReadAll(resp.Body)
 		if isGAE{
 
-			ctx.Infof("Response body: '%s'",string(data))
+			//log.Infof(ctx,"Response body: '%s'",string(data))
 		}
 		if w, ok := v.(io.Writer); ok {
 			var b bytes.Buffer
@@ -224,7 +224,7 @@ func (c *Client) SendString(req *http.Request) (error, string) {
 	data, _ := ioutil.ReadAll(resp.Body)
 	if isGAE{
 
-		ctx.Infof("Response body: '%s'",string(data))
+		//ctx.Infof("Response body: '%s'",string(data))
 	}
 	return nil, string(data)
 
